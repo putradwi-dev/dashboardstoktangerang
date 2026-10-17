@@ -3,13 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencatatan Stok Barang Realtime</title>
-  <!-- Bootstrap 5 CSS untuk Tampilan Modern & Responsif HP -->
+  <title>Pencatatan Stok Barang Realtime PT. MBP</title>
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background-color: #f8f9fa; padding: 20px; }
     .table-container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .stok-habis { background-color: #ffe6e6 !important; color: #d9534f; font-weight: bold; }
+    
+    /* Style untuk barang dengan stok kosong/habis */
+    .stok-habis { 
+      background-color: #ffe6e6 !important; 
+      color: #d9534f !important; 
+      font-weight: bold; 
+    }
+    
+    /* Style khusus untuk baris judul/pemisah (seperti TITIP DI GETRA, MBG PINDAH GUDANG) */
+    .baris-judul-kategori {
+      background-color: #e9ecef !important;
+      font-weight: bold;
+      font-size: 1.05rem;
+      color: #212529;
+    }
   </style>
 </head>
 <body>
@@ -17,7 +31,7 @@
 <div class="container-fluid max-width-lg">
   <div class="row mb-3 align-items-center">
     <div class="col-md-6">
-      <h2>📦 Stok Barang Realtime</h2>
+      <h2>📦 Stok Barang Realtime PT. MBP</h2>
       <p class="text-muted mb-0">Terhubung langsung dengan Google Sheets</p>
     </div>
     <div class="col-md-6 text-md-end mt-2 mt-md-0">
@@ -29,17 +43,16 @@
     <table class="table table-hover table-striped align-middle" id="stokTable">
       <thead class="table-dark">
         <tr>
-          <th width="60">NO</th>
-          <th>BARANG</th>
-          <th class="text-center">STOK AWAL</th>
-          <th class="text-center">STOK KELUAR</th>
-          <th class="text-center">SALDO / SISA STOK</th>
-          <th>KETERANGAN</th>
+          <th width="15">NO</th>
+          <th width="280">BARANG</th>
+          <th class="text-center" width="150">STOK AWAL</th>
+          <th class="text-center" width="150">STOK KELUAR</th>
+          <th class="text-center" width="200">SALDO / SISA STOK</th>
         </tr>
       </thead>
       <tbody id="tableBody">
         <tr>
-          <td colspan="6" class="text-center py-4">Memuat data stok...</td>
+          <td colspan="5" class="text-center py-4">Memuat data stok...</td>
         </tr>
       </tbody>
     </table>
@@ -59,31 +72,54 @@
       tableBody.innerHTML = '';
 
       if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada data stok.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data stok.</td></tr>';
         return;
       }
 
       data.forEach(item => {
         const row = document.createElement('tr');
         
-        // Memberi latar merah jika saldo 0
-        if (parseInt(item.saldo) === 0) {
-          row.classList.add('stok-habis');
+        // Deteksi apakah baris ini adalah Judul Kategori (misal: "TITIP DI GETRA")
+        // Baris judul kategori dicirikan tidak memiliki No, tidak ada Stok Awal, dan tidak ada Stok Keluar
+        const isJudulKategori = (!item.no || item.no === "") && 
+                                (!item.stokAwal || item.stokAwal === "" || item.stokAwal === 0) && 
+                                (!item.stokKeluar || item.stokKeluar === "" || item.stokKeluar === 0);
+
+        if (isJudulKategori) {
+          // Tampilan khusus untuk baris judul tabel / sub-judul
+          row.classList.add('baris-judul-kategori');
+          row.innerHTML = `
+            <td></td>
+            <td colspan="4"><strong>${item.barang || ''}</strong></td>
+          `;
+        } else {
+          // Tampilan untuk baris data barang biasa
+          const saldoNum = Number(item.saldo);
+          const isKosong = !isNaN(saldoNum) && saldoNum <= 0;
+          
+          let badgeClass = 'bg-primary';
+          
+          if (isKosong) {
+            row.classList.add('stok-habis');
+            badgeClass = 'bg-danger';
+          }
+
+          row.innerHTML = `
+            <td>${item.no || ''}</td>
+            <td><strong>${item.barang || ''}</strong></td>
+            <td class="text-center">${item.stokAwal !== "" && item.stokAwal !== undefined ? item.stokAwal : '-'}</td>
+            <td class="text-center">${item.stokKeluar !== "" && item.stokKeluar !== undefined ? item.stokKeluar : '-'}</td>
+            <td class="text-center">
+              <span class="badge ${badgeClass} fs-6">${item.saldo !== undefined ? item.saldo : 0}</span>
+            </td>
+          `;
         }
 
-        row.innerHTML = `
-          <td>${item.no || '-'}</td>
-          <td><strong>${item.barang}</strong></td>
-          <td class="text-center">${item.stokAwal}</td>
-          <td class="text-center">${item.stokKeluar}</td>
-          <td class="text-center"><span class="badge bg-primary fs-6">${item.saldo}</span></td>
-          <td>${item.keterangan}</td>
-        `;
         tableBody.appendChild(row);
       });
     } catch (error) {
       console.error('Gagal mengambil data:', error);
-      document.getElementById('tableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data dari Spreadsheet.</td></tr>';
+      document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat data dari Spreadsheet.</td></tr>';
     }
   }
 
@@ -102,10 +138,8 @@
     });
   }
 
-  // Jalankan saat pertama kali dibuka
+  // Load pertama kali & set interval 10 detik
   loadStokData();
-
-  // Refresh otomatis data tiap 10 detik
   setInterval(loadStokData, 10000);
 </script>
 
