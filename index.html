@@ -12,22 +12,22 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg-body: #f4f7f6;
-      --primary-header: #34495e;
-      --soft-card: #ffffff;
-      --text-main: #2c3e50;
-      --text-muted: #7f8c8d;
+      --bg-body: #F6F3EC;               /* Warna latar belakang hangat */
+      --primary-header: #8D7663;        /* Warna cokelat hangat header */
+      --soft-card: #FFFFFF;             /* Kartu putih bersih */
+      --text-main: #4A403A;             /* Teks utama gelap kecokelatan */
+      --text-muted: #8C7B70;            /* Teks sekunder */
       
-      /* Status Badge Colors (Soft) */
-      --badge-available-bg: #e8f4fd;
-      --badge-available-text: #2980b9;
-      --badge-empty-bg: #fceae8;
+      /* Status Badge Colors (Warm Theme) */
+      --badge-available-bg: #EAE3D9;
+      --badge-available-text: #6B5B4F;
+      --badge-empty-bg: #FCEAE8;
       --badge-empty-text: #ff0000;
       
-      /* Row Colors (Soft) */
-      --row-empty-bg: #fff5f5;
-      --row-category-bg: #ebf2f7;
-      --row-category-text: #34495e;
+      /* Row Colors */
+      --row-empty-bg: #FFF5F5;
+      --row-category-bg: #EFECE6;
+      --row-category-text: #5A4D43;
     }
 
     body { 
@@ -37,9 +37,18 @@
       padding: 30px 15px; 
     }
 
+    .main-banner {
+      background-color: var(--primary-header);
+      color: #FFFFFF;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(141, 118, 99, 0.15);
+      margin-bottom: 24px;
+    }
+
     .header-title {
       font-weight: 700;
-      color: var(--primary-header);
+      color: #FFFFFF;
       letter-spacing: -0.5px;
     }
 
@@ -47,43 +56,44 @@
       background: var(--soft-card); 
       padding: 24px; 
       border-radius: 16px; 
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); 
-      border: 1px solid #eef2f5;
+      box-shadow: 0 10px 30px rgba(141, 118, 99, 0.05); 
+      border: 1px solid #EAE3D9;
     }
 
     .search-input {
       border-radius: 10px;
-      border: 1px solid #dce4ec;
+      border: 1px solid #D9CBD0;
       padding: 10px 16px;
-      background-color: #fafbfc;
+      background-color: #FAFAFA;
+      color: var(--text-main);
       transition: all 0.2s ease;
     }
 
     .search-input:focus {
-      background-color: #fff;
-      border-color: #a5b4fc;
-      box-shadow: 0 0 0 4px rgba(165, 180, 252, 0.15);
+      background-color: #FFF;
+      border-color: var(--primary-header);
+      box-shadow: 0 0 0 4px rgba(141, 118, 99, 0.15);
     }
 
     .table {
       margin-bottom: 0;
-      border-color: #f1f5f9;
+      border-color: #EFECE6;
     }
 
     .table thead th {
-      background-color: #f8fafc !important;
-      color: #64748b !important;
+      background-color: #EFECE6 !important;
+      color: var(--primary-header) !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 14px 16px;
-      border-bottom: 2px solid #e2e8f0;
+      border-bottom: 2px solid #EAE3D9;
     }
 
     .table tbody td {
       padding: 14px 16px;
-      color: #334155;
+      color: var(--text-main);
       font-size: 0.95rem;
     }
 
@@ -119,8 +129,8 @@
       font-weight: 600;
       font-size: 0.95rem;
       color: var(--row-category-text) !important;
-      border-top: 1px solid #dbeafe;
-      border-bottom: 1px solid #dbeafe;
+      border-top: 1px solid #EAE3D9;
+      border-bottom: 1px solid #EAE3D9;
     }
     
     /* Style Footer */
@@ -142,13 +152,14 @@
 <body>
 
 <div class="container-fluid max-width-lg">
-  <div class="row mb-4 align-items-center">
+  <!-- Banner Header dengan Tema Warna Hangat -->
+  <div class="main-banner row align-items-center">
     <div class="col-md-6">
       <h2 class="header-title mb-1">📦 Stok Barang Realtime PT. MBP</h2>
-      <p class="text-muted mb-0" style="font-size: 0.9rem;">Data Realtime dari Google Sheets</p>
+      <p class="mb-0 text-white-40" style="font-size: 0.9rem;">Data Realtime dari Google Sheets</p>
     </div>
     <div class="col-md-6 text-md-end mt-3 mt-md-0">
-      <input type="text" id="searchInput" class="form-control search-input" placeholder="🔍 Cari nama / merk / tipe barang..." onkeyup="filterBarang()">
+      <input type="text" id="searchInput" class="form-control search-input" placeholder="Cari nama / merk / tipe barang..." onkeyup="filterBarang()">
     </div>
   </div>
 
