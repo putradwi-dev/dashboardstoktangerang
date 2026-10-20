@@ -133,19 +133,6 @@
       border-bottom: 1px solid #EAE3D9;
     }
     
-    /* Label/Badge Posisi Gudang saat Pencarian */
-    .badge-gudang {
-      display: inline-block;
-      margin-top: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #8D7663;
-      background-color: #EFECE6;
-      padding: 2px 8px;
-      border-radius: 4px;
-      border: 1px solid #EAE3D9;
-    }
-
     /* Style Footer */
     .footer-text {
       text-align: center;
@@ -219,34 +206,23 @@
         return;
       }
 
-      // Pelacakan kategori/gudang yang lebih presisi berdasarkan baris sub-judul asli dari Google Sheets
-      let currentGudang = 'GUDANG UTAMA';
-
       data.forEach(item => {
         const row = document.createElement('tr');
         
-        // Cek apakah baris ini bertindak sebagai baris kategori/judul gudang
-        const noVal = String(item.no || '').trim();
-        const stokAwalVal = String(item.stokAwal || '').trim();
-        const stokKeluarVal = String(item.stokKeluar || '').trim();
-        const saldoVal = String(item.saldo || '').trim();
+        // Deteksi apakah baris ini adalah Judul Kategori (misal: "TITIP DI GETRA")
+        const isJudulKategori = (!item.no || item.no === "") && 
+                                (!item.stokAwal || item.stokAwal === "" || item.stokAwal === 0) && 
+                                (!item.stokKeluar || item.stokKeluar === "" || item.stokKeluar === 0);
 
-        // Kategori terdeteksi jika kolom NO kosong, DAN kolom angka-angka di sebelah kanan tidak memiliki nilai angka yang valid
-        const isKategori = (noVal === "" || noVal === "-") && 
-                           (stokAwalVal === "" || stokAwalVal === "-") && 
-                           (stokKeluarVal === "" || stokKeluarVal === "-") &&
-                           (saldoVal === "" || saldoVal === "0" || saldoVal === "-");
-
-        if (isKategori && item.barang && item.barang.trim() !== "") {
-          currentGudang = item.barang.trim();
+        if (isJudulKategori) {
+          // Tampilan khusus untuk baris judul tabel / sub-judul
           row.classList.add('baris-judul-kategori');
-          row.setAttribute('data-type', 'kategori');
           row.innerHTML = `
             <td></td>
-            <td colspan="4"><strong>${currentGudang}</strong></td>
+            <td colspan="4"><strong>${item.barang || ''}</strong></td>
           `;
         } else {
-          // Baris data barang biasa
+          // Tampilan untuk baris data barang biasa
           const saldoNum = Number(item.saldo);
           const isKosong = !isNaN(saldoNum) && saldoNum <= 0;
           
@@ -257,18 +233,9 @@
             badgeClass = 'badge-soft-danger';
           }
 
-          row.setAttribute('data-type', 'barang');
-          row.setAttribute('data-kategori', currentGudang);
-          row.setAttribute('data-nama', item.barang || '');
-
           row.innerHTML = `
             <td>${item.no || ''}</td>
-            <td class="cell-barang">
-              <strong>${item.barang || ''}</strong>
-              <div class="info-gudang" style="display: none;">
-                <span class="badge-gudang">📍 ${currentGudang}</span>
-              </div>
-            </td>
+            <td><strong>${item.barang || ''}</strong></td>
             <td class="text-center">${item.stokAwal !== "" && item.stokAwal !== undefined ? item.stokAwal : '-'}</td>
             <td class="text-center">${item.stokKeluar !== "" && item.stokKeluar !== undefined ? item.stokKeluar : '-'}</td>
             <td class="text-center">
@@ -279,44 +246,23 @@
 
         tableBody.appendChild(row);
       });
-
-      // Perbarui tampilan pencarian jika sedang aktif
-      filterBarang();
     } catch (error) {
       console.error('Gagal mengambil data:', error);
       document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat data dari Spreadsheet.</td></tr>';
     }
   }
 
-  // Filter Pencarian dengan Menampilkan Posisi Gudang Asli Masing-Masing Barang
+  // Filter Pencarian
   function filterBarang() {
-    const input = document.getElementById('searchInput').value.toLowerCase().trim();
+    const input = document.getElementById('searchInput').value.toLowerCase();
     const rows = document.querySelectorAll('#tableBody tr');
     
     rows.forEach(row => {
-      const type = row.getAttribute('data-type');
-      
-      if (type === 'barang') {
-        const namaBarang = (row.getAttribute('data-nama') || '').toLowerCase();
-        const infoGudang = row.querySelector('.info-gudang');
-
-        if (input !== '') {
-          if (namaBarang.includes(input)) {
-            row.style.display = '';
-            if (infoGudang) infoGudang.style.display = 'block'; // Menampilkan nama gudang yang sesuai untuk tiap baris
-          } else {
-            row.style.display = 'none';
-          }
-        } else {
-          row.style.display = '';
-          if (infoGudang) infoGudang.style.display = 'none';
-        }
-      } else if (type === 'kategori') {
-        if (input !== '') {
-          row.style.display = 'none';
-        } else {
-          row.style.display = '';
-        }
+      const namaBarang = row.cells[1] ? row.cells[1].textContent.toLowerCase() : '';
+      if (namaBarang.includes(input)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
       }
     });
   }
