@@ -30,11 +30,13 @@
       --row-category-text: #5A4D43;
     }
 
-    body { 
+    /* Memastikan tidak ada overflow yang memotong efek sticky */
+    html, body {
       background-color: var(--bg-body); 
       font-family: 'Inter', sans-serif;
       color: var(--text-main);
       padding: 30px 15px; 
+      overflow-x: visible;
     }
 
     .main-banner {
@@ -58,6 +60,7 @@
       border-radius: 16px; 
       box-shadow: 0 10px 30px rgba(141, 118, 99, 0.05); 
       border: 1px solid #EAE3D9;
+      overflow: visible !important; /* Wajib visible agar sticky bekerja ke window browser */
     }
 
     .search-input {
@@ -78,23 +81,32 @@
     .table {
       margin-bottom: 0;
       border-color: #EFECE6;
+      border-collapse: separate;
+      border-spacing: 0;
     }
 
-    .table thead th {
+    /* PENTING: Pengaturan Sticky Header yang Benar-Benar Freeze di Layar Browser */
+    #stokTable thead tr th {
+      position: -webkit-sticky !important;
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 9999 !important;
       background-color: #EFECE6 !important;
       color: var(--primary-header) !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 14px 16px;
-      border-bottom: 2px solid #EAE3D9;
+      padding: 16px;
+      border-bottom: 2px solid #D9CBD0 !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Efek melayang saat di-scroll */
     }
 
     .table tbody td {
       padding: 14px 16px;
       color: var(--text-main);
       font-size: 0.95rem;
+      background-color: #FFFFFF;
     }
 
     /* Soft Badge Styles */
@@ -124,16 +136,13 @@
     }
 
     /* Style untuk barang dengan stok kosong/habis */
-    .stok-habis { 
+    .stok-habis td { 
       background-color: var(--row-empty-bg) !important; 
       color: var(--badge-empty-text) !important; 
     }
-    .stok-habis td {
-      color: var(--badge-empty-text) !important;
-    }
 
     /* Style khusus untuk baris judul/pemisah */
-    .baris-judul-kategori {
+    .baris-judul-kategori td {
       background-color: var(--row-category-bg) !important;
       font-weight: 700;
       font-size: 0.95rem;
@@ -172,7 +181,7 @@
     </div>
   </div>
 
-  <div class="table-container table-responsive">
+  <div class="table-container">
     <table class="table table-hover align-middle" id="stokTable">
       <thead>
         <tr>
