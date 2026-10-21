@@ -247,7 +247,7 @@
     <div class="col-md-6 text-md-end mt-3 mt-md-0">
       <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white" style="font-size: 0.85rem;">
         <span id="lastUpdated">Memuat waktu...</span>
-        <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2" style="font-size: 0.75rem; font-weight: 600;">🔄 Segarkan</button>
+        <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2" style="font-size: 0.75rem; font-weight: 600;">REFRESH</button>
       </div>
     </div>
   </div>
@@ -525,7 +525,11 @@
 
   function updateTimestamp() {
     const now = new Date();
-    const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    
     document.getElementById('lastUpdated').textContent = `Terakhir diperbarui: ${timeString}`;
   }
 
