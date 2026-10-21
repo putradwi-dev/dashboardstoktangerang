@@ -30,12 +30,12 @@
       --row-category-text: #5A4D43;
     }
 
-    /* Memastikan tidak ada overflow yang memotong efek sticky */
+    /* Padding atas diperkecil agar header naik ke atas dengan rapi */
     html, body {
       background-color: var(--bg-body); 
       font-family: 'Inter', sans-serif;
       color: var(--text-main);
-      padding: 12px 15px; /* Diubah dari 30px 15px menjadi lebih kecil agar naik ke atas */
+      padding: 12px 15px; 
       overflow-x: visible;
     }
 
@@ -233,6 +233,48 @@
       opacity: 0.85;
       margin-top: 3px;
     }
+
+    /* PENGATURAN KHUSUS CETAK / PRINT */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        padding: 0 !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .main-banner {
+        background-color: #8D7663 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        box-shadow: none !important;
+        margin-bottom: 15px !important;
+      }
+      .table-container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      #stokTable thead tr th {
+        position: static !important;
+        background-color: #EFECE6 !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        box-shadow: none !important;
+      }
+      .stok-habis td {
+        background-color: #FFF5F5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .baris-judul-kategori td {
+        background-color: #EFECE6 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
   </style>
 </head>
 <body>
@@ -247,13 +289,14 @@
     <div class="col-md-6 text-md-end mt-3 mt-md-0">
       <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white" style="font-size: 0.85rem;">
         <span id="lastUpdated">Memuat waktu...</span>
-        <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2" style="font-size: 0.75rem; font-weight: 600;">REFRESH</button>
+        <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600;">REFRESH</button>
+        <button onclick="printData()" class="btn btn-sm btn-dark text-white py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600; background-color: #5A4D43; border: none;">🖨️ CETAK</button>
       </div>
     </div>
   </div>
 
-  <!-- Statistik Ringkas (Counter Summary) -->
-  <div class="row g-3 mb-4">
+  <!-- Statistik Ringkas (Counter Summary) - Ikut disembunyikan saat print agar fokus ke tabel data -->
+  <div class="row g-3 mb-4 no-print">
     <div class="col-md-4">
       <div class="stat-card">
         <div>
@@ -283,8 +326,8 @@
     </div>
   </div>
 
-  <!-- Kontrol Pencarian & Filter Terstruktur (2 Baris) -->
-  <div class="table-container mb-3 py-3">
+  <!-- Kontrol Pencarian & Filter Terstruktur (2 Baris) - Disembunyikan saat print -->
+  <div class="table-container mb-3 py-3 no-print">
     <!-- Kotak Pencarian -->
     <div class="row mb-3">
       <div class="col-12">
@@ -390,12 +433,10 @@
   function processAndRenderData() {
     let dataToProcess = [...rawData];
 
-    // Jika sortDirection aktif (1 atau 2), kita kelompokkan dan urutkan berdasarkan kategori gudangnya
     if (sortDirection !== 0) {
       let grouped = [];
       let currentGudangGroup = { header: null, items: [] };
 
-      // Pisahkan berdasarkan header kategori gudang
       dataToProcess.forEach(item => {
         const isJudulKategori = (!item.no || item.no === "") && 
                                 (!item.stokAwal || item.stokAwal === "" || item.stokAwal === 0) && 
@@ -414,20 +455,18 @@
         grouped.push(currentGudangGroup);
       }
 
-      // Urutkan item barang di dalam masing-masing gudang
       grouped.forEach(group => {
         group.items.sort((a, b) => {
           let nameA = (a.barang || '').toLowerCase();
           let nameB = (b.barang || '').toLowerCase();
           if (sortDirection === 1) {
-            return nameA.localeCompare(nameB); // A-Z
+            return nameA.localeCompare(nameB);
           } else {
-            return nameB.localeCompare(nameA); // Z-A
+            return nameB.localeCompare(nameA);
           }
         });
       });
 
-      // Gabungkan kembali menjadi satu array datar
       dataToProcess = [];
       grouped.forEach(group => {
         if (group.header) dataToProcess.push(group.header);
@@ -596,6 +635,11 @@
   function clearSearch() {
     document.getElementById('searchInput').value = '';
     filterBarang();
+  }
+
+  // Fungsi untuk memicu perintah cetak browser
+  function printData() {
+    window.print();
   }
 
   // Load pertama kali & set interval 10 detik
