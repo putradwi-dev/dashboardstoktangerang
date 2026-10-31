@@ -5,17 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pencatatan Stok Barang Realtime PT. MBP</title>
 
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/putradwi-dev/dashboardstoktangerang/main/favicon.png">
+  <!-- Favicon Logo PT. MBP -->
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/putradwi-dev/dashboardstoktangerang/main/logo-mbp.png">
 
   <!-- Open Graph / WhatsApp Preview Meta Tags -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Pencatatan Stok Barang Realtime PT. MBP">
-<meta property="og:description" content="Pencatatan Stok Barang Realtime PT. MBP.">
-<meta property="og:image" content="https://raw.githubusercontent.com/putradwi-dev/dashboardstoktangerang/main/preview.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:url" content="https://stokrealtime.ptmbp.my.id/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pencatatan Stok Barang Realtime PT. MBP">
+  <meta property="og:description" content="Pencatatan Stok Barang Realtime PT. MBP.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/putradwi-dev/dashboardstoktangerang/main/preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://stokrealtime.ptmbp.my.id/">
   
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,7 +176,7 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    /* Header Barang yang bisa diklik untuk sorting */
+    /* Header yang bisa diklik untuk sorting */
     .sortable-header {
       cursor: pointer;
       user-select: none;
@@ -308,7 +309,7 @@
     </div>
   </div>
 
-  <!-- Statistik Ringkas (Counter Summary) - Ikut disembunyikan saat print agar fokus ke tabel data -->
+  <!-- Statistik Ringkas (Counter Summary) -->
   <div class="row g-3 mb-4 no-print">
     <div class="col-md-4">
       <div class="stat-card">
@@ -339,7 +340,7 @@
     </div>
   </div>
 
-  <!-- Kontrol Pencarian & Filter Terstruktur (2 Baris) - Disembunyikan saat print -->
+  <!-- Kontrol Pencarian & Filter Terstruktur (2 Baris) -->
   <div class="table-container mb-3 py-3 no-print">
     <!-- Kotak Pencarian -->
     <div class="row mb-3">
@@ -380,13 +381,15 @@
       <thead>
         <tr>
           <th width="15">NO</th>
-          <th width="240" class="sortable-header" onclick="toggleSort()" title="Klik untuk mengurutkan A-Z / Z-A">
-            BARANG <span id="sortIcon" class="ms-1 text-muted">↕️</span>
+          <th width="240" class="sortable-header" onclick="toggleSort('barang')" title="Klik untuk mengurutkan A-Z / Z-A">
+            BARANG <span id="sortIconBarang" class="ms-1 text-muted">↕️</span>
           </th>
           <th width="160">GUDANG / LOKASI</th>
           <th class="text-center" width="130">STOK AWAL</th>
           <th class="text-center" width="130">STOK KELUAR</th>
-          <th class="text-center" width="170">SALDO / SISA STOK</th>
+          <th class="text-center sortable-header" width="170" onclick="toggleSort('saldo')" title="Klik untuk mengurutkan jumlah stok">
+            SALDO / SISA STOK <span id="sortIconSaldo" class="ms-1 text-muted">↕️</span>
+          </th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -409,7 +412,10 @@
   let rawData = [];
   let currentGudangFilter = 'all';
   let currentStatusFilter = 'all';
-  let sortDirection = 0; // 0 = Default (Sheet), 1 = A-Z, 2 = Z-A
+  
+  // Pengaturan Sorting: type ('barang' atau 'saldo'), direction (0 = Default, 1 = Asc/A-Z/Terkecil, 2 = Desc/Z-A/Terbesar)
+  let currentSortType = null; 
+  let sortDirection = 0; 
 
   async function loadStokData() {
     try {
@@ -425,19 +431,29 @@
     }
   }
 
-  function toggleSort() {
-    sortDirection = (sortDirection + 1) % 3;
-    const sortIcon = document.getElementById('sortIcon');
-    
-    if (sortDirection === 0) {
-      sortIcon.textContent = '↕️';
-      sortIcon.title = 'Urutan default';
-    } else if (sortDirection === 1) {
-      sortIcon.textContent = '🔽 A-Z';
-      sortIcon.title = 'Urutan A ke Z';
-    } else if (sortDirection === 2) {
-      sortIcon.textContent = '🔼 Z-A';
-      sortIcon.title = 'Urutan Z ke A';
+  function toggleSort(type) {
+    if (currentSortType !== type) {
+      currentSortType = type;
+      sortDirection = 1; // Mulai dari urutan pertama (A-Z atau Terkecil ke Terbesar)
+    } else {
+      sortDirection = (sortDirection + 1) % 3;
+      if (sortDirection === 0) {
+        currentSortType = null;
+      }
+    }
+
+    // Reset ikon kedua kolom
+    const iconBarang = document.getElementById('sortIconBarang');
+    const iconSaldo = document.getElementById('sortIconSaldo');
+    iconBarang.textContent = '↕️';
+    iconSaldo.textContent = '↕️';
+
+    if (currentSortType === 'barang') {
+      if (sortDirection === 1) iconBarang.textContent = '🔽 A-Z';
+      else if (sortDirection === 2) iconBarang.textContent = '🔼 Z-A';
+    } else if (currentSortType === 'saldo') {
+      if (sortDirection === 1) iconSaldo.textContent = '🔼 Terkecil'; // Terkecil ke terbesar
+      else if (sortDirection === 2) iconSaldo.textContent = '🔽 Terbesar'; // Terbesar ke terkecil
     }
     
     processAndRenderData();
@@ -446,7 +462,7 @@
   function processAndRenderData() {
     let dataToProcess = [...rawData];
 
-    if (sortDirection !== 0) {
+    if (currentSortType !== null && sortDirection !== 0) {
       let grouped = [];
       let currentGudangGroup = { header: null, items: [] };
 
@@ -468,14 +484,19 @@
         grouped.push(currentGudangGroup);
       }
 
+      // Lakukan pengurutan item di dalam masing-masing kelompok gudang
       grouped.forEach(group => {
         group.items.sort((a, b) => {
-          let nameA = (a.barang || '').toLowerCase();
-          let nameB = (b.barang || '').toLowerCase();
-          if (sortDirection === 1) {
-            return nameA.localeCompare(nameB);
-          } else {
-            return nameB.localeCompare(nameA);
+          if (currentSortType === 'barang') {
+            let nameA = (a.barang || '').toLowerCase();
+            let nameB = (b.barang || '').toLowerCase();
+            if (sortDirection === 1) return nameA.localeCompare(nameB);
+            else return nameB.localeCompare(nameA);
+          } else if (currentSortType === 'saldo') {
+            let valA = Number(a.saldo) || 0;
+            let valB = Number(b.saldo) || 0;
+            if (sortDirection === 1) return valA - valB; // Terkecil ke terbesar
+            else return valB - valA; // Terbesar ke terkecil
           }
         });
       });
