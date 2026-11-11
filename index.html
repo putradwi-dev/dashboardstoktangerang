@@ -26,30 +26,43 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     :root {
-      /* Ganti URL gambar di bawah ini jika ingin menggunakan gambar lain */
       --bg-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop');
-      
-      --primary-header: #8D7663;        /* Warna cokelat hangat header */
-      --soft-card: rgba(255, 255, 255, 0.92); /* Kartu putih bersih semi-transparan */
-      --text-main: #4A403A;             /* Teks utama gelap kecokelatan */
-      --text-muted: #8C7B70;            /* Teks sekunder */
-      
-      /* Status Badge Colors (Warm Theme) */
+      --primary-header: #8D7663;        
+      --soft-card: rgba(255, 255, 255, 0.92); 
+      --text-main: #4A403A;             
+      --text-muted: #8C7B70;            
       --badge-available-bg: #EAE3D9;
       --badge-available-text: #6B5B4F;
       --badge-empty-bg: #FCEAE8;
       --badge-empty-text: #ff0000;
-      
-      /* Row Colors */
       --row-empty-bg: #FFF5F5;
       --row-category-bg: #EFECE6;
       --row-category-text: #5A4D43;
+      --overlay-gradient: rgba(246, 243, 236, 0.78);
+      --input-bg: rgba(250, 250, 250, 0.95);
+      --table-bg: #FFFFFF;
     }
 
-    /* Padding atas diperkecil agar header naik ke atas dengan rapi */
+    /* DARK MODE THEME VARIABLES */
+    [data-theme="dark"] {
+      --primary-header: #4A3B32;
+      --soft-card: rgba(30, 28, 26, 0.92);
+      --text-main: #EFECE6;
+      --text-muted: #B5A89E;
+      --badge-available-bg: #3A3430;
+      --badge-available-text: #D4C5B9;
+      --badge-empty-bg: #4A2222;
+      --badge-empty-text: #ff6b6b;
+      --row-empty-bg: #382020;
+      --row-category-bg: #3E3732;
+      --row-category-text: #EFECE6;
+      --overlay-gradient: rgba(18, 16, 15, 0.88);
+      --input-bg: rgba(45, 41, 38, 0.95);
+      --table-bg: #221F1D;
+    }
+
     html, body {
-      /* Nilai 0.75 pada rgba membuat gambar latar belakang jauh lebih jelas dan tajam */
-      background-image: linear-gradient(rgba(246, 243, 236, 0.78), rgba(246, 243, 236, 0.78)), var(--bg-image);
+      background-image: linear-gradient(var(--overlay-gradient), var(--overlay-gradient)), var(--bg-image);
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -58,7 +71,156 @@
       padding: 12px 15px; 
       overflow-x: visible;
       min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
     }
+
+    /* =========================================================
+       LAYAR INTRO LAMPU INTERAKTIF (SPLASH SCREEN)
+       ========================================================= */
+    #lampSplash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #11100f;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    #lampSplash.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .lamp-container {
+      position: relative;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .lamp-shade {
+      width: 140px;
+      height: 70px;
+      background: #2a2624;
+      border-radius: 70px 70px 10px 10px;
+      margin: 0 auto;
+      position: relative;
+      box-shadow: inset 0 -5px 10px rgba(0,0,0,0.5);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .lamp-bulb {
+      width: 40px;
+      height: 20px;
+      background: #443c38;
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .lamp-stand {
+      width: 8px;
+      height: 180px;
+      background: #2a2624;
+      margin: 0 auto;
+    }
+
+    .lamp-base {
+      width: 80px;
+      height: 14px;
+      background: #2a2624;
+      border-radius: 10px 10px 0 0;
+      margin: 0 auto;
+    }
+
+    .pull-cord-container {
+      position: absolute;
+      top: 45px;
+      right: 32px;
+      width: 20px;
+      height: 90px;
+      cursor: pointer;
+    }
+
+    .cord-string {
+      width: 2px;
+      height: 60px;
+      background: #c5b5a2;
+      margin: 0 auto;
+      transition: height 0.15s ease;
+    }
+
+    .cord-handle {
+      width: 12px;
+      height: 20px;
+      background: #d4af37;
+      border-radius: 6px;
+      margin: -2px auto 0 auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: transform 0.15s ease;
+    }
+
+    .lamp-container.on .lamp-shade {
+      background: #8D7663;
+      box-shadow: 0 0 40px #d4af37, inset 0 -5px 10px rgba(255,255,255,0.3);
+    }
+
+    .lamp-container.on .lamp-bulb {
+      background: #fff3cd;
+      box-shadow: 0 0 30px 10px #fffae6;
+    }
+
+    .light-beam {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 120px solid transparent;
+      border-right: 120px solid transparent;
+      border-top: 250px solid rgba(212, 175, 55, 0);
+      pointer-events: none;
+      transition: border-top 0.4s ease;
+    }
+
+    .lamp-container.on .light-beam {
+      border-top: 250px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .splash-text {
+      color: #c5b5a2;
+      margin-top: 25px;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      text-align: center;
+      animation: pulseText 1.5s infinite;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .pull-cord-container:active .cord-string,
+    .pull-cord-container.pulling .cord-string {
+      height: 80px;
+    }
+    .pull-cord-container:active .cord-handle,
+    .pull-cord-container.pulling .cord-handle {
+      transform: translateY(20px);
+    }
+
     /* =========================================================
        ANIMASI MASUK DASHBOARD UTAMA
        ========================================================= */
@@ -78,9 +240,10 @@
       color: #FFFFFF;
       padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(141, 118, 99, 0.15);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       margin-bottom: 20px;
       animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      transition: background-color 0.3s ease;
     }
 
     .stat-card-anim-1 { animation: fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -104,19 +267,19 @@
     /* Statistik Kartu Ringkas */
     .stat-card {
       background: var(--soft-card);
-      border: 1px solid #EAE3D9;
+      border: 1px solid rgba(141, 118, 99, 0.2);
       border-radius: 12px;
       padding: 14px 18px;
-      box-shadow: 0 4px 12px rgba(141, 118, 99, 0.04);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       display: flex;
       align-items: center;
       justify-content: space-between;
       backdrop-filter: blur(5px);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
     }
     .stat-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(141, 118, 99, 0.08);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
     .stat-card .stat-label {
       font-size: 0.8rem;
@@ -136,10 +299,11 @@
       background: var(--soft-card); 
       padding: 24px; 
       border-radius: 16px; 
-      box-shadow: 0 10px 30px rgba(141, 118, 99, 0.05); 
-      border: 1px solid #EAE3D9;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+      border: 1px solid rgba(141, 118, 99, 0.2);
       backdrop-filter: blur(5px);
       overflow: visible !important; 
+      transition: background 0.3s ease;
     }
 
     /* Search & Filter Controls */
@@ -148,16 +312,17 @@
     }
     .search-input {
       border-radius: 10px;
-      border: 1px solid #D9CBD0;
+      border: 1px solid rgba(141, 118, 99, 0.3);
       padding: 10px 40px 10px 16px;
-      background-color: rgba(250, 250, 250, 0.95);
+      background-color: var(--input-bg);
       color: var(--text-main);
       transition: all 0.2s ease;
     }
     .search-input:focus {
-      background-color: #FFF;
+      background-color: var(--table-bg);
       border-color: var(--primary-header);
       box-shadow: 0 0 0 4px rgba(141, 118, 99, 0.15);
+      color: var(--text-main);
     }
     .clear-search {
       position: absolute;
@@ -177,8 +342,8 @@
 
     /* Filter Pills */
     .filter-btn {
-      border: 1px solid #D9CBD0;
-      background-color: rgba(250, 250, 250, 0.95);
+      border: 1px solid rgba(141, 118, 99, 0.3);
+      background-color: var(--input-bg);
       color: var(--text-main);
       font-weight: 500;
       font-size: 0.82rem;
@@ -194,7 +359,7 @@
 
     .table {
       margin-bottom: 0;
-      border-color: #EFECE6;
+      border-color: rgba(141, 118, 99, 0.2);
       border-collapse: separate;
       border-spacing: 0;
     }
@@ -205,14 +370,14 @@
       position: sticky !important;
       top: 0 !important;
       z-index: 9999 !important;
-      background-color: #EFECE6 !important;
-      color: var(--primary-header) !important;
+      background-color: var(--row-category-bg) !important;
+      color: var(--text-main) !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 16px;
-      border-bottom: 2px solid #D9CBD0 !important;
+      border-bottom: 2px solid rgba(141, 118, 99, 0.3) !important;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
@@ -222,14 +387,15 @@
       transition: background-color 0.2s;
     }
     .sortable-header:hover {
-      background-color: #E5E0D8 !important;
+      opacity: 0.8;
     }
 
     .table tbody td {
       padding: 14px 16px;
       color: var(--text-main);
       font-size: 0.95rem;
-      background-color: #FFFFFF;
+      background-color: var(--table-bg);
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .badge-soft-primary {
@@ -249,8 +415,8 @@
     }
 
     .badge-gudang {
-      background-color: #EFECE6;
-      color: #6B5B4F;
+      background-color: var(--row-category-bg);
+      color: var(--text-main);
       font-weight: 600;
       padding: 4px 10px;
       border-radius: 6px;
@@ -267,8 +433,8 @@
       font-weight: 700;
       font-size: 0.95rem;
       color: var(--row-category-text) !important;
-      border-top: 2px solid #D9CBD0;
-      border-bottom: 2px solid #D9CBD0;
+      border-top: 2px solid rgba(141, 118, 99, 0.3);
+      border-bottom: 2px solid rgba(141, 118, 99, 0.3);
     }
     
     .footer-text {
@@ -278,7 +444,7 @@
       color: var(--text-main);
       font-weight: 600;
       font-size: 0.85rem;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.9);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
     .footer-text .developer {
       font-size: 0.80rem;
@@ -334,6 +500,25 @@
   </style>
 </head>
 <body>
+
+<!-- SPLASH SCREEN INTERAKTIF LAMPU -->
+<div id="lampSplash">
+  <div class="lamp-container" id="lampBox" onclick="turnOnLamp()">
+    <div class="light-beam"></div>
+    <div class="lamp-shade">
+      <div class="lamp-bulb"></div>
+    </div>
+    <div class="lamp-stand"></div>
+    <div class="lamp-base"></div>
+    <!-- Tali Sakelar -->
+    <div class="pull-cord-container" id="cordBtn" title="Tarik tali untuk menyalakan">
+      <div class="cord-string"></div>
+      <div class="cord-handle"></div>
+    </div>
+  </div>
+  <div class="splash-text">💡 Klik lampu atau tarik tali untuk menyalakan dashboard</div>
+</div>
+
 <div class="container-fluid max-width-lg">
   <!-- Banner Header -->
   <div class="main-banner row align-items-center">
@@ -346,6 +531,7 @@
         <span id="lastUpdated">Memuat waktu...</span>
         <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600;">REFRESH</button>
         <button onclick="printData()" class="btn btn-sm btn-dark text-white py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600; background-color: #5A4D43; border: none;">🖨️ CETAK</button>
+        <button onclick="toggleTheme()" class="btn btn-sm btn-light text-dark py-0 px-2 no-print" id="themeToggleBtn" style="font-size: 0.75rem; font-weight: 600;" title="Ganti Mode Gelap/Terang">🌙</button>
       </div>
     </div>
   </div>
@@ -446,6 +632,34 @@
 </div>
 
 <script>
+  // Fungsi Dark/Light Mode Toggle
+  function toggleTheme() {
+    const htmlEl = document.documentElement;
+    const themeBtn = document.getElementById('themeToggleBtn');
+    
+    if (htmlEl.getAttribute('data-theme') === 'dark') {
+      htmlEl.removeAttribute('data-theme');
+      themeBtn.textContent = '🌙';
+      localStorage.setItem('theme', 'light');
+    } else {
+      htmlEl.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️';
+      localStorage.setItem('theme', 'dark');
+    }
+  }
+
+  // Cek memori tema saat halaman dimuat
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      window.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('themeToggleBtn');
+        if (btn) btn.textContent = '☀️';
+      });
+    }
+  })();
+
   function turnOnLamp() {
     const lampBox = document.getElementById('lampBox');
     const cordBtn = document.getElementById('cordBtn');
