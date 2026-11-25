@@ -48,7 +48,6 @@
 
     /* Padding atas diperkecil agar header naik ke atas dengan rapi */
     html, body {
-      /* Nilai 0.75 pada rgba membuat gambar latar belakang jauh lebih jelas dan tajam */
       background-image: linear-gradient(rgba(246, 243, 236, 0.78), rgba(246, 243, 236, 0.78)), var(--bg-image);
       background-size: cover;
       background-position: center;
@@ -59,6 +58,7 @@
       overflow-x: visible;
       min-height: 100vh;
     }
+
     /* =========================================================
        ANIMASI MASUK DASHBOARD UTAMA
        ========================================================= */
@@ -81,6 +81,16 @@
       box-shadow: 0 4px 15px rgba(141, 118, 99, 0.15);
       margin-bottom: 20px;
       animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Logo PT. MBP Polos Tanpa Kotak */
+    .header-logo-img {
+      height: 55px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
     }
 
     .stat-card-anim-1 { animation: fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -334,12 +344,18 @@
   </style>
 </head>
 <body>
+
 <div class="container-fluid max-width-lg">
   <!-- Banner Header -->
   <div class="main-banner row align-items-center">
     <div class="col-md-6">
-      <h2 class="header-title mb-1">📦 Stok Barang Realtime PT. MBP</h2>
-      <p class="mb-0 text-white-50" style="font-size: 0.9rem;">Data Realtime dari Google Sheets</p>
+      <div class="d-flex align-items-center gap-3">
+        <img src="https://raw.githubusercontent.com/putradwi-dev/dashboardstoktangerang/main/ptmbp.png" alt="Logo PT. MBP" class="header-logo-img">
+        <div>
+          <h2 class="header-title mb-1">Stok Barang Realtime</h2>
+          <p class="mb-0 text-white-50" style="font-size: 0.9rem;">Data Realtime dari Google Sheets</p>
+        </div>
+      </div>
     </div>
     <div class="col-md-6 text-md-end mt-3 mt-md-0">
       <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white" style="font-size: 0.85rem;">
@@ -446,19 +462,6 @@
 </div>
 
 <script>
-  function turnOnLamp() {
-    const lampBox = document.getElementById('lampBox');
-    const cordBtn = document.getElementById('cordBtn');
-    const splash = document.getElementById('lampSplash');
-
-    cordBtn.classList.add('pulling');
-    lampBox.classList.add('on');
-
-    setTimeout(() => {
-      splash.classList.add('fade-out');
-    }, 500);
-  }
-
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyubZMKxaNS89ROsbayuHtDugIWjAf2nGESShZWA5N8wUwMnZgrmKSwk-6-xDnEO2b9/exec';
   let rawData = [];
   let currentGudangFilter = 'all';
