@@ -17,6 +17,22 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:url" content="https://stokrealtime.ptmbp.my.id/">
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-EERJ6XFFT1"></script>
+  <script>
+    const GA_MEASUREMENT_ID = 'G-EERJ6XFFT1';
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+      gtag('config', GA_MEASUREMENT_ID, {
+        page_title: document.title,
+        page_location: window.location.href
+      });
+    }
+  </script>
   
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +49,7 @@
       --soft-card: rgba(255, 255, 255, 0.92); /* Kartu putih bersih semi-transparan */
       --text-main: #4A403A;             /* Teks utama gelap kecokelatan */
       --text-muted: #8C7B70;            /* Teks sekunder */
+      --border: #EAE3D9;
       
       /* Status Badge Colors (Warm Theme) */
       --badge-available-bg: #EAE3D9;
@@ -297,6 +314,36 @@
       margin-top: 3px;
     }
 
+    /* Label Status Google Analytics (non-klik) di Footer */
+    .footer-analytics {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #fdfaf5;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-shadow: none;
+      user-select: none;
+    }
+
+    .ga-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #d97706;
+      flex-shrink: 0;
+    }
+
+    .ga-dot.active {
+      background: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.16);
+    }
+
     @media print {
       body {
         background-image: none !important;
@@ -458,6 +505,17 @@
   <footer class="footer-text">
     <div>DASHBOARD STOK BARANG REALTIME PT. MBP © 2026</div>
     <div class="developer">by putradwi-dev</div>
+    <div>
+      <span class="footer-analytics no-print" id="gaFooterBadge" aria-label="Status Google Analytics">
+        <span class="ga-dot" id="gaStatusDot"></span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span id="gaStatusText">Statistik Pengunjung (Google Analytics)</span>
+      </span>
+    </div>
   </footer>
 </div>
 
@@ -719,6 +777,18 @@
   function printData() {
     window.print();
   }
+
+  // Status indikator Google Analytics di footer
+  (function initAnalyticsBadge() {
+    const dot = document.getElementById('gaStatusDot');
+    const text = document.getElementById('gaStatusText');
+    if (typeof GA_MEASUREMENT_ID !== 'undefined' && GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+      dot.classList.add('active');
+      text.textContent = 'Google Analytics Aktif';
+    } else {
+      text.textContent = 'Google Analytics (ID Belum Diatur)';
+    }
+  })();
 
   loadStokData();
   setInterval(loadStokData, 10000);
