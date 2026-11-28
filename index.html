@@ -45,22 +45,22 @@
       /* Ganti URL gambar di bawah ini jika ingin menggunakan gambar lain */
       --bg-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1920&auto=format&fit=crop');
       
-      --primary-header: #8D7663;        /* Warna cokelat hangat header */
+      --primary-header: #7c3a10;        /* Warna cokelat utama */
       --soft-card: rgba(255, 255, 255, 0.92); /* Kartu putih bersih semi-transparan */
-      --text-main: #4A403A;             /* Teks utama gelap kecokelatan */
-      --text-muted: #8C7B70;            /* Teks sekunder */
-      --border: #EAE3D9;
+      --text-main: #111111;             /* Teks utama cokelat #7c3a10 */
+      --text-muted: #7c3a10;            /* Teks sekunder cokelat #7c3a10 */
+      --border: #7c3a10;
       
-      /* Status Badge Colors (Warm Theme) */
-      --badge-available-bg: #EAE3D9;
-      --badge-available-text: #6B5B4F;
+      /* Status Badge Colors */
+      --badge-available-bg: #f6e7dc;
+      --badge-available-text: #7c3a10;
       --badge-empty-bg: #FCEAE8;
       --badge-empty-text: #ff0000;
       
       /* Row Colors */
       --row-empty-bg: #FFF5F5;
-      --row-category-bg: #EFECE6;
-      --row-category-text: #5A4D43;
+      --row-category-bg: #f6e7dc;
+      --row-category-text: #111111;
     }
 
     /* Padding atas diperkecil agar header naik ke atas dengan rapi */
@@ -95,7 +95,7 @@
       color: #FFFFFF;
       padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(141, 118, 99, 0.15);
+      box-shadow: 0 4px 15px rgba(124, 58, 16, 0.22);
       margin-bottom: 20px;
       animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
@@ -131,10 +131,10 @@
     /* Statistik Kartu Ringkas */
     .stat-card {
       background: var(--soft-card);
-      border: 1px solid #EAE3D9;
+      border: 1px solid rgba(124, 58, 16, 0.25);
       border-radius: 12px;
       padding: 14px 18px;
-      box-shadow: 0 4px 12px rgba(141, 118, 99, 0.04);
+      box-shadow: 0 4px 12px rgba(124, 58, 16, 0.06);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -143,7 +143,7 @@
     }
     .stat-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(141, 118, 99, 0.08);
+      box-shadow: 0 6px 16px rgba(124, 58, 16, 0.12);
     }
     .stat-card .stat-label {
       font-size: 0.8rem;
@@ -163,8 +163,8 @@
       background: var(--soft-card); 
       padding: 24px; 
       border-radius: 16px; 
-      box-shadow: 0 10px 30px rgba(141, 118, 99, 0.05); 
-      border: 1px solid #EAE3D9;
+      box-shadow: 0 10px 30px rgba(124, 58, 16, 0.08); 
+      border: 1px solid rgba(124, 58, 16, 0.25);
       backdrop-filter: blur(5px);
       overflow: visible !important; 
     }
@@ -175,7 +175,7 @@
     }
     .search-input {
       border-radius: 10px;
-      border: 1px solid #D9CBD0;
+      border: 1px solid rgba(124, 58, 16, 0.35);
       padding: 10px 40px 10px 16px;
       background-color: rgba(250, 250, 250, 0.95);
       color: var(--text-main);
@@ -184,7 +184,7 @@
     .search-input:focus {
       background-color: #FFF;
       border-color: var(--primary-header);
-      box-shadow: 0 0 0 4px rgba(141, 118, 99, 0.15);
+      box-shadow: 0 0 0 4px rgba(124, 58, 16, 0.15);
     }
     .clear-search {
       position: absolute;
@@ -204,7 +204,7 @@
 
     /* Filter Pills */
     .filter-btn {
-      border: 1px solid #D9CBD0;
+      border: 1px solid rgba(124, 58, 16, 0.35);
       background-color: rgba(250, 250, 250, 0.95);
       color: var(--text-main);
       font-weight: 500;
@@ -221,7 +221,7 @@
 
     .table {
       margin-bottom: 0;
-      border-color: #EFECE6;
+      border-color: rgba(124, 58, 16, 0.15);
       border-collapse: separate;
       border-spacing: 0;
     }
@@ -232,15 +232,15 @@
       position: sticky !important;
       top: 0 !important;
       z-index: 9999 !important;
-      background-color: #EFECE6 !important;
-      color: var(--primary-header) !important;
+      background-color: #f6e7dc !important;
+      color: #111111 !important;
       font-weight: 600;
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 16px;
-      border-bottom: 2px solid #D9CBD0 !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-bottom: 2px solid var(--primary-header) !important;
+      box-shadow: 0 4px 6px -1px rgba(124, 58, 16, 0.12);
     }
 
     .sortable-header {
@@ -249,7 +249,7 @@
       transition: background-color 0.2s;
     }
     .sortable-header:hover {
-      background-color: #E5E0D8 !important;
+      background-color: #ebd3c2 !important;
     }
 
     .table tbody td {
@@ -276,8 +276,8 @@
     }
 
     .badge-gudang {
-      background-color: #EFECE6;
-      color: #6B5B4F;
+      background-color: #f6e7dc;
+      color: #7c3a10;
       font-weight: 600;
       padding: 4px 10px;
       border-radius: 6px;
@@ -294,8 +294,8 @@
       font-weight: 700;
       font-size: 0.95rem;
       color: var(--row-category-text) !important;
-      border-top: 2px solid #D9CBD0;
-      border-bottom: 2px solid #D9CBD0;
+      border-top: 2px solid rgba(124, 58, 16, 0.3);
+      border-bottom: 2px solid rgba(124, 58, 16, 0.3);
     }
     
     .footer-text {
@@ -355,7 +355,7 @@
         display: none !important;
       }
       .main-banner {
-        background-color: #8D7663 !important;
+        background-color: #7c3a10 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         box-shadow: none !important;
@@ -371,8 +371,8 @@
       }
       #stokTable thead tr th {
         position: static !important;
-        background-color: #EFECE6 !important;
-        color: #000 !important;
+        background-color: #f6e7dc !important;
+        color: #7c3a10 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         box-shadow: none !important;
@@ -383,7 +383,7 @@
         print-color-adjust: exact;
       }
       .baris-judul-kategori td {
-        background-color: #EFECE6 !important;
+        background-color: #f6e7dc !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
@@ -408,7 +408,7 @@
       <div class="d-inline-flex align-items-center gap-2 bg-white bg-opacity-10 px-3 py-2 rounded-3 text-white" style="font-size: 0.85rem;">
         <span id="lastUpdated">Memuat waktu...</span>
         <button onclick="loadStokData()" class="btn btn-sm btn-light text-dark py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600;">REFRESH</button>
-        <button onclick="printData()" class="btn btn-sm btn-dark text-white py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600; background-color: #5A4D43; border: none;">🖨️ CETAK</button>
+        <button onclick="printData()" class="btn btn-sm btn-dark text-white py-0 px-2 no-print" style="font-size: 0.75rem; font-weight: 600; background-color: #7c3a10; border: 1px solid rgba(255, 255, 255, 0.35);">🖨️ CETAK</button>
       </div>
     </div>
   </div>
